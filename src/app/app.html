@@ -1,0 +1,27 @@
+<header class="topbar">
+  <a class="brand" routerLink="/">Gatepass</a>
+  <nav>
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Events</a>
+    <a routerLink="/tickets" routerLinkActive="active">My tickets</a>
+    <a routerLink="/organiser" routerLinkActive="active">Organiser</a>
+  </nav>
+  <div class="profile">
+    @if (editingProfile()) {
+      <form (ngSubmit)="saveProfile()" class="profile-form">
+        <input name="name" [(ngModel)]="draftName" placeholder="Your name" aria-label="Your name" />
+        <input name="email" type="email" [(ngModel)]="draftEmail" placeholder="you@example.com" aria-label="Your email" />
+        <button type="submit" class="small">Save</button>
+      </form>
+    } @else {
+      <span class="muted">Signed in as</span>
+      <strong data-testid="profile-name">{{ profiles.profile().name }}</strong>
+      <button type="button" class="link" (click)="editProfile()">Change</button>
+    }
+  </div>
+</header>
+
+<main class="container">
+  <router-outlet />
+</main>
+
+<footer class="container muted footer">Gatepass, tickets and RSVPs for events across Nigeria.</footer>

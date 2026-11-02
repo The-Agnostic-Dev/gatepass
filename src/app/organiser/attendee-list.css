@@ -1,0 +1,26 @@
+.back {
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+h1 {
+  margin-bottom: 0.2rem;
+}
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+}
+.toolbar input {
+  flex: 1 1 18rem;
+  max-width: 26rem;
+}
+.ok {
+  color: var(--ok);
+  font-weight: 600;
+}
+.actions {
+  text-align: right;
+}

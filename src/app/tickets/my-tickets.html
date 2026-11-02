@@ -1,0 +1,56 @@
+<h1>My tickets</h1>
+<p class="muted">Tickets booked with {{ profiles.profile().email }}.</p>
+
+@if (message()) { <p class="notice">{{ message() }}</p> }
+@if (actionError()) { <p class="error">{{ actionError() }}</p> }
+@if (store.error()) { <p class="error">{{ store.error() }}</p> }
+
+@if (store.loading() && store.tickets().length === 0) {
+  <p class="muted">Loading your tickets...</p>
+} @else if (store.tickets().length === 0) {
+  <div class="card empty">
+    <p>You have no tickets yet.</p>
+    <a routerLink="/">Find something to do</a>
+  </div>
+} @else {
+  <div class="list">
+    @for (ticket of store.tickets(); track ticket.id) {
+      <article class="card ticket" [attr.data-ref]="ticket.ref">
+        <div class="main">
+          <h3>
+            @if (ticket.event) {
+              <a [routerLink]="['/events', ticket.event.id]">{{ ticket.event.title }}</a>
+            }
+          </h3>
+          <p class="muted">{{ ticket.event?.startsAt | date: 'EEE d MMM y, h:mm a' }} &middot; {{ ticket.event?.venue }}</p>
+          <p>
+            <span class="chip">{{ ticket.tierName }}</span>
+            Ref <strong>{{ ticket.ref }}</strong> &middot; Admits <strong data-testid="admits">{{ ticket.quantity }}</strong>
+            @if (ticket.checkedInAt) { &middot; <span class="ok">Checked in</span> }
+          </p>
+        </div>
+        <div class="side">
+          <p class="total" data-testid="ticket-total">{{ ticket.total | naira: 'Free' }}</p>
+          @if (ticket.promoCode) { <p class="muted small">Code {{ ticket.promoCode }} applied</p> }
+
+          @if (editing() === ticket.id) {
+            <div class="edit">
+              <select [ngModel]="draftGuests()" (ngModelChange)="draftGuests.set(+$event)" aria-label="Guests">
+                @for (n of guestOptions; track n) {
+                  <option [ngValue]="n">{{ n === 0 ? 'Just me' : '+' + n + ' guests' }}</option>
+                }
+              </select>
+              <button type="button" class="small" (click)="saveGuests(ticket)">Save</button>
+              <button type="button" class="small secondary" (click)="editing.set(null)">Cancel</button>
+            </div>
+          } @else if (!ticket.checkedInAt) {
+            <div class="edit">
+              <button type="button" class="small secondary" (click)="startEdit(ticket)">Change guests</button>
+              <button type="button" class="small danger" (click)="cancel(ticket)">Cancel ticket</button>
+            </div>
+          }
+        </div>
+      </article>
+    }
+  </div>
+}

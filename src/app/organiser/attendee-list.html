@@ -1,0 +1,63 @@
+<a routerLink="/organiser" class="back">&larr; All events</a>
+
+@if (error()) { <p class="error">{{ error() }}</p> }
+
+@if (data(); as d) {
+  <h1>{{ d.event.title }}</h1>
+  <p class="muted">{{ d.event.startsAt | date: 'EEEE d MMMM y, h:mm a' }}</p>
+
+  <div class="toolbar">
+    <input
+      type="search"
+      placeholder="Search by name, email or reference"
+      aria-label="Search attendees"
+      [ngModel]="search()"
+      (ngModelChange)="search.set($event)"
+    />
+    <p class="stats" data-testid="checkin-stats">
+      Checked in <strong>{{ checkedIn() }}</strong> of <strong>{{ headcount() }}</strong> people
+    </p>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Reference</th>
+        <th>Ticket</th>
+        <th>Admits</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (a of visible(); track a.id; let i = $index) {
+        <tr [attr.data-ref]="a.ref">
+          <td>
+            <strong>{{ a.name }}</strong><br />
+            <span class="muted">{{ a.email }}</span>
+          </td>
+          <td>{{ a.ref }}</td>
+          <td>{{ a.tierName }}</td>
+          <td>{{ a.quantity }}</td>
+          <td>
+            @if (a.checkedInAt) {
+              <span class="ok">In at {{ a.checkedInAt | date: 'h:mm a' }}</span>
+            } @else {
+              <span class="muted">Not arrived</span>
+            }
+          </td>
+          <td class="actions">
+            @if (a.checkedInAt) {
+              <button type="button" class="small secondary" (click)="undo(a)">Undo</button>
+            } @else {
+              <button type="button" class="small" (click)="checkIn(i)">Check in</button>
+            }
+          </td>
+        </tr>
+      } @empty {
+        <tr><td colspan="6" class="muted">No attendees match your search.</td></tr>
+      }
+    </tbody>
+  </table>
+}

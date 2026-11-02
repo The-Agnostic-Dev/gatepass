@@ -1,0 +1,39 @@
+.list {
+  display: grid;
+  gap: 1rem;
+}
+.ticket {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.ticket h3 {
+  margin: 0 0 0.25rem;
+}
+.ticket p {
+  margin: 0.25rem 0;
+}
+.side {
+  text-align: right;
+}
+.total {
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+.small {
+  font-size: 0.8rem;
+}
+.ok {
+  color: var(--ok);
+  font-weight: 600;
+}
+.edit {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+.empty {
+  text-align: center;
+}

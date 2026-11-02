@@ -1,0 +1,109 @@
+@if (loadError()) {
+  <div class="card"><p class="error">{{ loadError() }}</p><a routerLink="/">Back to events</a></div>
+}
+
+@if (event(); as e) {
+  <a routerLink="/" class="back">&larr; All events</a>
+
+  <section class="header">
+    <span class="chip">{{ e.category }}</span>
+    <h1>{{ e.title }}</h1>
+    <p class="when" data-testid="event-date">{{ e.startsAt | date: 'EEEE dd/mm/yyyy, h:mm a' }}</p>
+    <p class="muted">{{ e.venue }}, {{ e.city }} &middot; Hosted by {{ e.organiser }}</p>
+  </section>
+
+  <div class="layout">
+    <section>
+      <h2>About</h2>
+      <p>{{ e.description }}</p>
+
+      <h2>Tickets</h2>
+      <div class="tiers">
+        @for (tier of e.tiers; track tier.id) {
+          <button
+            type="button"
+            class="tier card"
+            [class.selected]="tier.id === tierId()"
+            [disabled]="tier.remaining <= 0 || isPast()"
+            [attr.data-tier-id]="tier.id"
+            (click)="chooseTier(tier.id)"
+          >
+            <span class="tier-name">{{ tier.name }}</span>
+            <span class="tier-price">{{ tier.price | naira: 'Free' }}</span>
+            <span class="tier-left muted">
+              @if (tier.remaining <= 0) {
+                Sold out
+              } @else {
+                {{ tier.capacity }} left
+              }
+            </span>
+          </button>
+        }
+      </div>
+    </section>
+
+    <aside class="card booking">
+      @if (booked(); as ticket) {
+        <div class="notice" data-testid="booking-confirmed">
+          <strong>You're in!</strong> Booking reference <strong>{{ ticket.ref }}</strong>.
+          We've emailed your ticket to {{ ticket.email }}.
+        </div>
+        <p><a routerLink="/tickets">View my tickets</a></p>
+      } @else if (isPast()) {
+        <p class="muted">This event has already taken place.</p>
+      } @else {
+        <h2>RSVP</h2>
+        <form (ngSubmit)="submit()" class="rsvp">
+          <label>
+            Your name
+            <input name="name" [ngModel]="name()" (ngModelChange)="name.set($event)" autocomplete="name" />
+            @if (fieldErrors()['name']) { <span class="error">{{ fieldErrors()['name'] }}</span> }
+          </label>
+          <label>
+            Email
+            <input name="email" type="email" [ngModel]="email()" (ngModelChange)="email.set($event)" autocomplete="email" />
+            @if (fieldErrors()['email']) { <span class="error">{{ fieldErrors()['email'] }}</span> }
+          </label>
+          <label>
+            Guests coming with you
+            <select name="guests" [ngModel]="guests()" (ngModelChange)="guests.set(+$event)">
+              @for (n of guestOptions; track n) {
+                <option [ngValue]="n">{{ n === 0 ? 'Just me' : '+' + n }}</option>
+              }
+            </select>
+          </label>
+
+          <div class="promo">
+            @if (promo(); as p) {
+              <span class="chip">{{ p.code }}</span> <span class="muted">{{ p.description }}</span>
+              <button type="button" class="link" (click)="removePromo()">Remove</button>
+            } @else {
+              <input name="promo" placeholder="Promo code" [ngModel]="promoInput()" (ngModelChange)="promoInput.set($event)" />
+              <button type="button" class="secondary" (click)="applyPromo()">Apply</button>
+            }
+          </div>
+          @if (promoError()) { <p class="error">{{ promoError() }}</p> }
+
+          @if (order(); as o) {
+            <dl class="summary">
+              <dt>{{ selectedTier()?.name }} &times; {{ o.quantity }}</dt>
+              <dd>{{ o.subtotal | naira }}</dd>
+              @if (o.discount > 0) {
+                <dt>Discount</dt>
+                <dd>-{{ o.discount | naira }}</dd>
+              }
+              <dt class="total">Total</dt>
+              <dd class="total" data-testid="order-total">{{ o.total | naira }}</dd>
+            </dl>
+          }
+
+          @if (submitError()) { <p class="error" data-testid="booking-error">{{ submitError() }}</p> }
+
+          <button type="submit" [disabled]="!canSubmit()">
+            {{ submitting() ? 'Booking...' : order()?.total ? 'Book tickets' : 'RSVP' }}
+          </button>
+        </form>
+      }
+    </aside>
+  </div>
+}

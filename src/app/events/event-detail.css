@@ -1,0 +1,83 @@
+.back {
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+.header h1 {
+  margin: 0.4rem 0;
+}
+.header p {
+  margin: 0.2rem 0;
+}
+.when {
+  font-weight: 600;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+.tiers {
+  display: grid;
+  gap: 0.75rem;
+}
+.tier {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  text-align: left;
+  color: inherit;
+  background: #fff;
+  font-weight: 400;
+}
+.tier.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+.tier-name {
+  font-weight: 700;
+}
+.tier-price {
+  font-weight: 700;
+  text-align: right;
+}
+.tier-left {
+  font-size: 0.85rem;
+}
+.booking h2 {
+  margin-top: 0;
+}
+.rsvp {
+  display: grid;
+  gap: 0.9rem;
+}
+.promo {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.promo input {
+  flex: 1;
+  min-width: 0;
+}
+.summary {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.35rem;
+  margin: 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+.summary dd {
+  margin: 0;
+  text-align: right;
+}
+.summary .total {
+  font-weight: 800;
+}
