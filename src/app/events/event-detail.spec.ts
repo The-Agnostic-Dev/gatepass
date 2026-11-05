@@ -116,40 +116,7 @@ describe('EventDetailPage remaining ticket counts', () => {
     comp['name'].set('Chidi Test');
     comp['email'].set('chidi@example.com');
 
-    const ownNames = Object.getOwnPropertyNames(comp);
-    const protoNames = Object.getOwnPropertyNames(Object.getPrototypeOf(comp));
-    const lifecycle = new Set([
-      'constructor',
-      'ngOnChanges',
-      'ngOnInit',
-      'ngDoCheck',
-      'ngAfterContentInit',
-      'ngAfterContentChecked',
-      'ngAfterViewInit',
-      'ngAfterViewChecked',
-      'ngOnDestroy',
-    ]);
-    const submitName = [...ownNames, ...protoNames].find(
-      (name) =>
-        !lifecycle.has(name) &&
-        typeof comp[name] === 'function' &&
-        /rsvp|submit|book|buy|purchase|order|confirm|reserve/i.test(name),
-    );
-
-    if (submitName) {
-      comp[submitName]();
-    } else {
-      const form = fixture.nativeElement.querySelector('form');
-      const button = fixture.nativeElement.querySelector('button[type="submit"]');
-      if (!form && !button) {
-        throw new Error('EventDetailPage has no submit/book method to drive a purchase through');
-      }
-      if (form) {
-        form.dispatchEvent(new Event('submit'));
-      } else {
-        button.click();
-      }
-    }
+    comp['submit']();
     await fixture.whenStable();
     fixture.detectChanges();
 
