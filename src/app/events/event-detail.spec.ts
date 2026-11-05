@@ -58,7 +58,7 @@ describe('EventDetailPage', () => {
     }).compileComponents();
   });
 
-  it('shows the remaining ticket count for each tier, not the capacity', () => {
+  it('shows the remaining ticket count for each tier, not the capacity', async () => {
     const fixture = TestBed.createComponent(EventDetailPage);
     fixture.componentRef.setInput('id', 'afrobeats-in-the-park');
     await fixture.whenStable();
@@ -68,7 +68,7 @@ describe('EventDetailPage', () => {
     expect(text).not.toContain('300 left');
   });
 
-  it('shows Sold out for a tier with no tickets remaining', () => {
+  it('shows Sold out for a tier with no tickets remaining', async () => {
     const fixture = TestBed.createComponent(EventDetailPage);
     fixture.componentRef.setInput('id', 'afrobeats-in-the-park');
     await fixture.whenStable();
