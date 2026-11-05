@@ -118,14 +118,38 @@ describe('EventDetailPage remaining ticket counts', () => {
 
     const ownNames = Object.getOwnPropertyNames(comp);
     const protoNames = Object.getOwnPropertyNames(Object.getPrototypeOf(comp));
-    const submitName = [...ownNames, ...protoNames].find((name) =>
-      /^(submit|book|buy|purchase|confirm|placeOrder|submitOrder|bookTickets)$/.test(name),
+    const lifecycle = new Set([
+      'constructor',
+      'ngOnChanges',
+      'ngOnInit',
+      'ngDoCheck',
+      'ngAfterContentInit',
+      'ngAfterContentChecked',
+      'ngAfterViewInit',
+      'ngAfterViewChecked',
+      'ngOnDestroy',
+    ]);
+    const submitName = [...ownNames, ...protoNames].find(
+      (name) =>
+        !lifecycle.has(name) &&
+        typeof comp[name] === 'function' &&
+        /rsvp|submit|book|buy|purchase|order|confirm|reserve/i.test(name),
     );
-    if (!submitName) {
-      throw new Error('EventDetailPage has no submit/book method to drive a purchase through');
-    }
 
-    comp[submitName]();
+    if (submitName) {
+      comp[submitName]();
+    } else {
+      const form = fixture.nativeElement.querySelector('form');
+      const button = fixture.nativeElement.querySelector('button[type="submit"]');
+      if (!form && !button) {
+        throw new Error('EventDetailPage has no submit/book method to drive a purchase through');
+      }
+      if (form) {
+        form.dispatchEvent(new Event('submit'));
+      } else {
+        button.click();
+      }
+    }
     await fixture.whenStable();
     fixture.detectChanges();
 
