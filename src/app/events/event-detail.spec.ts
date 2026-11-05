@@ -33,7 +33,7 @@ describe('EventDetailPage', () => {
 
   beforeEach(async () => {
     getEventCalls = 0;
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       imports: [EventDetailPage],
       providers: [
         provideRouter([]),
@@ -64,7 +64,7 @@ describe('EventDetailPage', () => {
           },
         },
       ],
-    });
+    }).compileComponents();
   });
 
   afterEach(() => {
@@ -102,17 +102,38 @@ describe('EventDetailPage', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.textContent).toContain('170 left');
+    const page: HTMLElement = fixture.nativeElement;
+    expect(page.textContent).toContain('170 left');
 
-    const component = fixture.componentInstance as any;
-    component.tierId.set('aitp-regular');
-    component.name.set('Test Guest');
-    component.email.set('guest@example.com');
-    component.submit();
+    const tierButton = Array.from(page.querySelectorAll('button')).find((button) =>
+      button.textContent?.includes('Regular'),
+    );
+    if (!tierButton) throw new Error('Regular tier button not found');
+    tierButton.click();
+    fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
 
-    const text = fixture.nativeElement.textContent;
+    const nameInput = page.querySelector<HTMLInputElement>('input[name="name"]');
+    const emailInput = page.querySelector<HTMLInputElement>('input[name="email"]');
+    if (!nameInput || !emailInput) throw new Error('Booking form inputs not found');
+    nameInput.value = 'Test Guest';
+    nameInput.dispatchEvent(new Event('input', { bubbles: true }));
+    emailInput.value = 'guest@example.com';
+    emailInput.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+
+    const form = page.querySelector('form');
+    if (!form) throw new Error('Booking form not found');
+    const submitButton = Array.from(form.querySelectorAll('button')).find(
+      (button) => button.type === 'submit',
+    );
+    if (!submitButton) throw new Error('Submit button not found');
+    submitButton.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const text = page.textContent;
     expect(text).toContain('169 left');
     expect(text).not.toContain('170 left');
   });
