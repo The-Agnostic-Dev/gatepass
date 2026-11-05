@@ -18,8 +18,8 @@ const event: EventDetail = {
   organiser: 'Sound Republic',
   description: 'An afternoon-into-night open air concert.',
   tiers: [
-    { id: 'aitp-regular', name: 'Regular', price: 5000, capacity: 300, remaining: 170 },
-    { id: 'aitp-vip', name: 'VIP', price: 25000, capacity: 50, remaining: 0 },
+    { id: 'aitp-regular', name: 'Regular', price: 5000, capacity: 300, sold: 130, remaining: 170 },
+    { id: 'aitp-vip', name: 'VIP', price: 25000, capacity: 50, sold: 50, remaining: 0 },
   ],
 };
 
