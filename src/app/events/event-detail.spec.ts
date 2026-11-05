@@ -1,19 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { platformBrowser } from '@angular/platform-browser';
-import { BrowserTestingModule } from '@angular/platform-browser/testing';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { EventDetailPage } from './event-detail';
 import { ApiService } from '../core/api.service';
 import { EventDetail } from '../core/models';
-
-beforeAll(() => {
-  TestBed.initTestEnvironment(BrowserTestingModule, platformBrowser());
-});
-
-afterAll(() => {
-  TestBed.resetTestEnvironment();
-});
 
 describe('EventDetailPage', () => {
   const detail: EventDetail = {
