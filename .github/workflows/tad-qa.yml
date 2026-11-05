@@ -31,10 +31,6 @@ jobs:
         run: |
           npx tsc --noEmit
           npm run build
-      - name: Test (affected first)
-        run: |
-          FILES=$(git diff --name-only --diff-filter=ACMR HEAD^1 HEAD -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.mjs' '*.cjs' '*.mts' '*.cts' '*.vue' '*.svelte' | tr '\n' ' ')
-          if [ -n "$FILES" ]; then npx vitest related --run --passWithNoTests $FILES; fi
       - name: Test
         run: |
           npm run test
