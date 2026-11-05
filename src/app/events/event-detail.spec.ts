@@ -1,9 +1,18 @@
 import { TestBed } from '@angular/core/testing';
+import { BrowserTestingModule } from '@angular/platform-browser/testing';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { EventDetailPage } from './event-detail';
 import { ApiService } from '../core/api.service';
 import { EventDetail } from '../core/models';
+
+beforeAll(() => {
+  TestBed.initTestEnvironment(BrowserTestingModule);
+});
+
+afterAll(() => {
+  TestBed.resetTestEnvironment();
+});
 
 describe('EventDetailPage', () => {
   const detail: EventDetail = {
@@ -29,6 +38,10 @@ describe('EventDetailPage', () => {
         { provide: ApiService, useValue: { getEvent: () => of(detail) } },
       ],
     });
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 
   it('shows the remaining ticket count for each tier, not the total capacity', async () => {
