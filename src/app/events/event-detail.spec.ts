@@ -1,19 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { BrowserTestingModule } from '@angular/platform-browser/testing';
-import { platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 import { of } from 'rxjs';
 import { EventDetailPage } from './event-detail';
 import { ApiService } from '../core/api.service';
 import { EventDetail } from '../core/models';
-
-beforeAll(() => {
-  TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserDynamicTesting());
-});
-
-afterAll(() => {
-  TestBed.destroyTestEnvironment();
-});
 
 describe('EventDetailPage', () => {
   const detail: EventDetail = {
@@ -26,8 +16,8 @@ describe('EventDetailPage', () => {
     organiser: 'Sound Republic',
     description: 'An afternoon-into-night open air concert.',
     tiers: [
-      { id: 'aitp-regular', name: 'Regular', price: 5000, capacity: 300, remaining: 170 },
-      { id: 'aitp-vip', name: 'VIP', price: 25000, capacity: 50, remaining: 0 },
+      { id: 'aitp-regular', name: 'Regular', price: 5000, capacity: 300, sold: 130, remaining: 170 },
+      { id: 'aitp-vip', name: 'VIP', price: 25000, capacity: 50, sold: 50, remaining: 0 },
     ],
   };
 
