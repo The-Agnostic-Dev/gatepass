@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { BrowserTestingModule, platformBrowserTesting } from '@angular/platform-browser/testing';
 import { signal } from '@angular/core';
 import { of } from 'rxjs';
 import { EventDetailPage } from './event-detail';
@@ -21,6 +22,12 @@ const event: EventDetail = {
     { id: 'aitp-vip', name: 'VIP', price: 25000, capacity: 50, remaining: 0 },
   ],
 };
+
+try {
+  TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
+} catch {
+  // The Angular test builder has already initialised the environment.
+}
 
 describe('EventDetailPage', () => {
   beforeEach(async () => {
