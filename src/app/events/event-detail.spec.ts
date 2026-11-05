@@ -111,10 +111,10 @@ describe('EventDetailPage remaining ticket counts', () => {
     expect(fixture.nativeElement.textContent).toContain('171 left');
 
     const comp = fixture.componentInstance as unknown as Record<string, any>;
-    comp.tierId.set('aitp-regular');
-    comp.guests.set(0);
-    comp.name.set('Chidi Test');
-    comp.email.set('chidi@example.com');
+    comp['tierId'].set('aitp-regular');
+    comp['guests'].set(0);
+    comp['name'].set('Chidi Test');
+    comp['email'].set('chidi@example.com');
 
     const ownNames = Object.getOwnPropertyNames(comp);
     const protoNames = Object.getOwnPropertyNames(Object.getPrototypeOf(comp));
@@ -122,8 +122,7 @@ describe('EventDetailPage remaining ticket counts', () => {
       /^(submit|book|buy|purchase|confirm|placeOrder|submitOrder|bookTickets)$/.test(name),
     );
     if (!submitName) {
-      fail('EventDetailPage has no submit/book method to drive a purchase through');
-      return;
+      throw new Error('EventDetailPage has no submit/book method to drive a purchase through');
     }
 
     comp[submitName]();
