@@ -21,12 +21,48 @@ describe('EventDetailPage', () => {
     ],
   };
 
+  const afterBooking: EventDetail = {
+    ...detail,
+    tiers: [
+      { id: 'aitp-regular', name: 'Regular', price: 5000, capacity: 300, sold: 131, remaining: 169 },
+      { id: 'aitp-vip', name: 'VIP', price: 25000, capacity: 50, sold: 50, remaining: 0 },
+    ],
+  };
+
+  let getEventCalls = 0;
+
   beforeEach(async () => {
+    getEventCalls = 0;
     TestBed.configureTestingModule({
       imports: [EventDetailPage],
       providers: [
         provideRouter([]),
-        { provide: ApiService, useValue: { getEvent: () => of(detail) } },
+        {
+          provide: ApiService,
+          useValue: {
+            getEvent: () => of(++getEventCalls > 1 ? afterBooking : detail),
+            rsvp: () =>
+              of({
+                id: 'ticket-1',
+                ref: 'GP-TEST1',
+                eventId: detail.id,
+                tierId: 'aitp-regular',
+                tierName: 'Regular',
+                name: 'Test Guest',
+                email: 'guest@example.com',
+                guests: 0,
+                quantity: 1,
+                unitPrice: 5000,
+                promoCode: null,
+                subtotal: 5000,
+                discount: 0,
+                total: 5000,
+                createdAt: new Date().toISOString(),
+                checkedInAt: null,
+                event: null,
+              }),
+          },
+        },
       ],
     });
   });
@@ -57,5 +93,27 @@ describe('EventDetailPage', () => {
     const text = fixture.nativeElement.textContent;
     expect(text).toContain('Sold out');
     expect(text).not.toContain('50 left');
+  });
+
+  it('shows one fewer ticket left after a purchase', async () => {
+    const fixture = TestBed.createComponent(EventDetailPage);
+    fixture.componentRef.setInput('id', 'afrobeats-in-the-park');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('170 left');
+
+    const component = fixture.componentInstance as any;
+    component.tierId.set('aitp-regular');
+    component.name.set('Test Guest');
+    component.email.set('guest@example.com');
+    component.submit();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const text = fixture.nativeElement.textContent;
+    expect(text).toContain('169 left');
+    expect(text).not.toContain('170 left');
   });
 });
