@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { BrowserTestingModule, platformBrowserTesting } from '@angular/platform-browser/testing';
 import { signal } from '@angular/core';
@@ -24,11 +24,18 @@ const event: EventDetail = {
   ],
 };
 
-try {
-  TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-} catch {
-  // Already initialised by the Angular test builder.
-}
+let environmentInitialised = false;
+
+beforeAll(() => {
+  if (environmentInitialised) return;
+  try {
+    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
+    environmentInitialised = true;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('already initialized')) return;
+    throw error;
+  }
+});
 
 describe('EventDetailPage', () => {
   beforeEach(async () => {
@@ -54,7 +61,7 @@ describe('EventDetailPage', () => {
   it('shows the remaining ticket count for each tier, not the capacity', () => {
     const fixture = TestBed.createComponent(EventDetailPage);
     fixture.componentRef.setInput('id', 'afrobeats-in-the-park');
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const text: string = fixture.nativeElement.textContent;
     expect(text).toContain('170 left');
@@ -64,7 +71,7 @@ describe('EventDetailPage', () => {
   it('shows Sold out for a tier with no tickets remaining', () => {
     const fixture = TestBed.createComponent(EventDetailPage);
     fixture.componentRef.setInput('id', 'afrobeats-in-the-park');
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const text: string = fixture.nativeElement.textContent;
     expect(text).toContain('Sold out');
